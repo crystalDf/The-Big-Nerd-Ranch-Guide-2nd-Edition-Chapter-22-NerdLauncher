@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -59,5 +60,24 @@ public class NerdLauncherFragment extends Fragment {
         });
 
         Log.i(TAG, "Found " + activities.size() + " activities.");
+    }
+
+    private class ActivityHolder extends RecyclerView.ViewHolder {
+
+        private ResolveInfo mResolveInfo;
+        private TextView mNameTextView;
+
+        public ActivityHolder(View itemView) {
+            super(itemView);
+            mNameTextView = (TextView) itemView;
+        }
+
+        public void bindActivity(ResolveInfo resolveInfo) {
+            mResolveInfo = resolveInfo;
+
+            PackageManager packageManager = getActivity().getPackageManager();
+            String appName = mResolveInfo.loadLabel(packageManager).toString();
+            mNameTextView.setText(appName);
+        }
     }
 }
