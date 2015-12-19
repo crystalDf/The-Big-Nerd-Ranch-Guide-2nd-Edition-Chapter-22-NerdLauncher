@@ -47,9 +47,9 @@ public class NerdLauncherFragment extends Fragment {
         startupIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 
         final PackageManager packageManager = getActivity().getPackageManager();
-        List<ResolveInfo> activities = packageManager.queryIntentActivities(startupIntent, 0);
+        List<ResolveInfo> resolveInfos = packageManager.queryIntentActivities(startupIntent, 0);
 
-        Collections.sort(activities, new Comparator<ResolveInfo>() {
+        Collections.sort(resolveInfos, new Comparator<ResolveInfo>() {
             @Override
             public int compare(ResolveInfo lhs, ResolveInfo rhs) {
                 return String.CASE_INSENSITIVE_ORDER.compare(
@@ -59,7 +59,9 @@ public class NerdLauncherFragment extends Fragment {
             }
         });
 
-        Log.i(TAG, "Found " + activities.size() + " activities.");
+        Log.i(TAG, "Found " + resolveInfos.size() + " resolveInfos.");
+        
+        mRecyclerView.setAdapter(new ActivityAdapter(resolveInfos));
     }
 
     private class ActivityHolder extends RecyclerView.ViewHolder {
@@ -78,6 +80,34 @@ public class NerdLauncherFragment extends Fragment {
             PackageManager packageManager = getActivity().getPackageManager();
             String appName = mResolveInfo.loadLabel(packageManager).toString();
             mNameTextView.setText(appName);
+        }
+    }
+
+    private class ActivityAdapter extends RecyclerView.Adapter<ActivityHolder> {
+
+        private List<ResolveInfo> mResolveInfos;
+
+        public ActivityAdapter(List<ResolveInfo> resolveInfos) {
+            mResolveInfos = resolveInfos;
+        }
+
+        @Override
+        public ActivityHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+            View view = layoutInflater.inflate(
+                    android.R.layout.simple_list_item_1, parent, false);
+            return new ActivityHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(ActivityHolder holder, int position) {
+            ResolveInfo resolveInfo = mResolveInfos.get(position);
+            holder.bindActivity(resolveInfo);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mResolveInfos.size();
         }
     }
 }
