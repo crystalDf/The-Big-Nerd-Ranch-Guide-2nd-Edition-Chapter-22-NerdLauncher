@@ -2,6 +2,7 @@ package com.star.nerdlauncher;
 
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
@@ -72,6 +73,17 @@ public class NerdLauncherFragment extends Fragment {
         public ActivityHolder(View itemView) {
             super(itemView);
             mNameTextView = (TextView) itemView;
+            mNameTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ActivityInfo activityInfo = mResolveInfo.activityInfo;
+
+                    Intent intent = new Intent(Intent.ACTION_MAIN)
+                            .setClassName(activityInfo.applicationInfo.packageName,
+                                    activityInfo.name);
+                    startActivity(intent);
+                }
+            });
         }
 
         public void bindActivity(ResolveInfo resolveInfo) {
