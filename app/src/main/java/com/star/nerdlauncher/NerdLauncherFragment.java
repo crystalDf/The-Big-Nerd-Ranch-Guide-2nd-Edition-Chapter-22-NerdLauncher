@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import java.util.Collections;
@@ -66,12 +68,12 @@ public class NerdLauncherFragment extends Fragment {
     private class ActivityHolder extends RecyclerView.ViewHolder {
 
         private ResolveInfo mResolveInfo;
-        private TextView mNameTextView;
+        private TextView mNameIconTextView;
 
         public ActivityHolder(View itemView) {
             super(itemView);
-            mNameTextView = (TextView) itemView;
-            mNameTextView.setOnClickListener(new View.OnClickListener() {
+            mNameIconTextView = (TextView) itemView;
+            mNameIconTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     ActivityInfo activityInfo = mResolveInfo.activityInfo;
@@ -89,8 +91,23 @@ public class NerdLauncherFragment extends Fragment {
             mResolveInfo = resolveInfo;
 
             PackageManager packageManager = getActivity().getPackageManager();
-            String appName = mResolveInfo.loadLabel(packageManager).toString();
-            mNameTextView.setText(appName);
+
+            final String appName = mResolveInfo.loadLabel(packageManager).toString();
+            final Drawable appIcon = mResolveInfo.loadIcon(packageManager);
+
+            mNameIconTextView.getViewTreeObserver().addOnGlobalLayoutListener(
+                    new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    mNameIconTextView.setText(appName);
+
+                    appIcon.setBounds(0, 0,
+                            mNameIconTextView.getHeight(), mNameIconTextView.getHeight());
+                    mNameIconTextView.setCompoundDrawables(null, null, appIcon, null);
+                }
+            });
+
+//            mNameIconTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, appIcons, null);
         }
     }
 
