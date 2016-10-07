@@ -107,7 +107,7 @@ public class NerdLauncherFragment extends Fragment {
                 }
             });
 
-//            mNameIconTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, appIcons, null);
+//            mNameIconTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, appIcon, null);
         }
     }
 
