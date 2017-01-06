@@ -138,4 +138,5 @@ public class NerdLauncherFragment extends Fragment {
             return mResolveInfos.size();
         }
     }
+
 }
